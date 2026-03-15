@@ -52,6 +52,7 @@ import { QuickMeetingSidebar } from "@/components/QuickMeetingSidebar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AdminDashboard from "./AdminDashboard";
 
 // Today's Calendar Widget Component
 function TodayCalendarWidgetContent() {
@@ -111,7 +112,7 @@ function TodayCalendarWidgetContent() {
   );
 }
 
-export default function Dashboard() {
+function EmployeeDashboard() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
@@ -1345,4 +1346,14 @@ export default function Dashboard() {
       )}
     </div>
   );
+}
+
+export default function Dashboard() {
+  const { user } = useAuth();
+
+  if (user?.role === "admin") {
+    return <AdminDashboard />;
+  }
+
+  return <EmployeeDashboard />;
 }
