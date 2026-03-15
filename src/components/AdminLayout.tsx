@@ -123,12 +123,12 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarCollapsed ? "w-20" : "w-64"
-        } bg-card border-r transition-all duration-300 flex flex-col shrink-0`}
+        } bg-card border-r transition-all duration-300 flex flex-col shrink-0 h-screen sticky top-0`}
         onMouseEnter={() => {
           if (!isMobile) setSidebarCollapsed(false);
         }}
@@ -207,7 +207,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto w-full">
+      <main className="flex-1 overflow-y-auto h-screen w-full">
         {/* Compact Header */}
         <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
           <div className="flex items-center justify-between px-4 py-3">
