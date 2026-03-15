@@ -1,6 +1,7 @@
 import { useMemo, useState, ReactNode } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useIsMobile } from "@/hooks/useMobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -15,6 +16,8 @@ import {
   Clock,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
   LogOut,
   Shield,
   Home,
@@ -40,14 +43,17 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const { user, logout } = useAuth();
-  const { toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const isMobile = useIsMobile();
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
+  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
 
   const { data: chatMessages } = trpc.chat.getMessages.useQuery(
     { limit: 100 },
@@ -119,74 +125,100 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Persistent Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-screen bg-card border-r transition-all duration-300 z-40 ${
-          sidebarOpen ? "w-64" : "w-16"
-        }`}
-      >
-        <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-4 border-b flex items-center justify-between">
-            {sidebarOpen && (
-              <div className="flex items-center gap-2">
-                <Shield className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">Admin</span>
-              </div>
-            )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="shrink-0"
-            >
-              {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </Button>
-          </div>
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-          {/* Navigation */}
-          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          sidebarCollapsed ? "w-20" : "w-64"
+        } bg-card border-r transition-all duration-300 flex flex-col fixed lg:relative inset-y-0 left-0 z-50 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+        onMouseEnter={() => {
+          if (!isMobile) setSidebarCollapsed(false);
+        }}
+        onMouseLeave={() => {
+          if (!isMobile) setSidebarCollapsed(true);
+        }}
+      >
+        {/* Logo & Toggle */}
+        <div className="p-4 border-b flex items-center justify-between">
+          {!sidebarCollapsed && (
+            <img src={logoSrc} alt="Rad.flow" className="h-8" style={{ width: "115px", height: "61px" }} />
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          >
+            {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          </Button>
+        </div>
+
+        {/* Search */}
+        {!sidebarCollapsed && (
+          <div className="p-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <nav className="flex-1 p-2 overflow-y-auto">
+          <div className="space-y-1">
             {menuItems.map((item) => (
               <Link key={item.path} href={item.path}>
                 <Button
-                  variant={isActive(item.path) ? "default" : "ghost"}
-                  size="sm"
-                  className={`w-full justify-start ${!sidebarOpen && "justify-center px-2"} ${isActive(item.path) ? "bg-primary text-primary-foreground" : ""}`}
+                  variant={isActive(item.path) ? "secondary" : "ghost"}
+                  className={`relative w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
                 >
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {sidebarOpen && <span className="ml-2 text-sm">{item.label}</span>}
+                  <item.icon className="h-5 w-5 shrink-0" />
+                  {!sidebarCollapsed && <span className="ml-3 text-sm">{item.label}</span>}
                 </Button>
               </Link>
             ))}
-          </nav>
-
-          {/* User Section */}
-          <div className="p-3 border-t space-y-1">
-            <Link href="/dashboard">
-              <Button
-                variant="outline"
-                size="sm"
-                className={`w-full justify-start ${!sidebarOpen && "justify-center px-2"}`}
-              >
-                <Home className="h-4 w-4 shrink-0" />
-                {sidebarOpen && <span className="ml-2 text-sm">Employee View</span>}
-              </Button>
-            </Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className={`w-full justify-start ${!sidebarOpen && "justify-center px-2"}`}
-            >
-              <LogOut className="h-4 w-4 shrink-0" />
-              {sidebarOpen && <span className="ml-2 text-sm">Logout</span>}
-            </Button>
           </div>
+        </nav>
+
+        {/* User Section */}
+        <div className="p-2 border-t space-y-1">
+          <Link href="/dashboard">
+            <Button
+              variant="outline"
+              size="sm"
+              className={`w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+            >
+              <Home className="h-4 w-4 shrink-0" />
+              {!sidebarCollapsed && <span className="ml-2 text-sm">Employee View</span>}
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className={`w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!sidebarCollapsed && <span className="ml-2 text-sm">Logout</span>}
+          </Button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
+      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
         {/* Compact Header */}
         <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
           <div className="flex items-center justify-between px-4 py-3">
