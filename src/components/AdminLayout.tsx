@@ -218,7 +218,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}>
+      <main className="flex-1 overflow-auto w-full">
         {/* Compact Header */}
         <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
           <div className="flex items-center justify-between px-4 py-3">
