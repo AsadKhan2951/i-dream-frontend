@@ -46,7 +46,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const isMobile = useIsMobile();
   const [location] = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
@@ -125,21 +124,11 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
       {/* Sidebar */}
       <aside
         className={`${
           sidebarCollapsed ? "w-20" : "w-64"
-        } bg-card border-r transition-all duration-300 flex flex-col fixed lg:relative inset-y-0 left-0 z-50 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
+        } bg-card border-r transition-all duration-300 flex flex-col shrink-0`}
         onMouseEnter={() => {
           if (!isMobile) setSidebarCollapsed(false);
         }}
