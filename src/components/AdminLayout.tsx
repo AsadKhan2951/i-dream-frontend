@@ -23,7 +23,6 @@ import {
   Home,
   Search,
   Bell,
-  MessageCircle,
   Activity,
   Settings,
   Mail,
@@ -49,7 +48,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showChat, setShowChat] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
   const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
@@ -227,16 +225,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 />
               </div>
 
-              {/* Chat Widget Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9"
-                onClick={() => setShowChat(!showChat)}
-              >
-                <MessageCircle className="h-4 w-4" />
-              </Button>
-
               {/* Notification Center */}
               <div className="relative">
                 <Button
@@ -285,13 +273,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         </div>
       </main>
 
-      {/* Global Chat Widget */}
-      {showChat && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <GlobalChatWidget />
-        </div>
-      )}
-
+      <GlobalChatWidget />
       <NotesWidget />
     </div>
   );
