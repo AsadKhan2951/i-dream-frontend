@@ -9,8 +9,23 @@ import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { format } from "date-fns";
 
-export function GlobalChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+type GlobalChatWidgetProps = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideLauncher?: boolean;
+};
+
+export function GlobalChatWidget({ open, onOpenChange, hideLauncher }: GlobalChatWidgetProps) {
+  const [isOpenInternal, setIsOpenInternal] = useState(false);
+  const isControlled = typeof open === "boolean";
+  const isOpen = isControlled ? Boolean(open) : isOpenInternal;
+  const setIsOpen = (value: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(value);
+      return;
+    }
+    setIsOpenInternal(value);
+  };
   const [message, setMessage] = useState("");
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
   const { user } = useAuth();
@@ -62,13 +77,15 @@ export function GlobalChatWidget() {
   return (
     <>
       {/* Floating Chat Button */}
-      <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-premium-lg bg-[#ff2801] hover:bg-[#e62401] text-white"
-        size="icon"
-      >
-        {isOpen ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6" />}
-      </Button>
+      {!hideLauncher && (
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-premium-lg bg-[#ff2801] hover:bg-[#e62401] text-white"
+          size="icon"
+        >
+          {isOpen ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6" />}
+        </Button>
+      )}
 
       {/* Chat Window */}
       {isOpen && (

@@ -14,7 +14,6 @@ import {
   BarChart3,
   Calendar,
   Clock,
-  Menu,
   X,
   ChevronLeft,
   ChevronRight,
@@ -26,14 +25,17 @@ import {
   Activity,
   Settings,
   Mail,
-  FileText
+  FileText,
+  Plus,
+  MessageSquare,
+  LifeBuoy
 } from "lucide-react";
 import { Link, useLocation, Redirect } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useRealtime } from "@/_core/hooks/useRealtime";
 import { toast } from "sonner";
 import { GlobalChatWidget } from "./GlobalChatWidget";
-import { NotesWidget } from "./NotesWidget";
+import { FeedbackDialog } from "./FeedbackDialog";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -48,6 +50,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [fabOpen, setFabOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
   const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
@@ -273,8 +278,46 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         </div>
       </main>
 
-      <GlobalChatWidget />
-      <NotesWidget />
+      <GlobalChatWidget open={chatOpen} onOpenChange={setChatOpen} hideLauncher />
+      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+
+      {/* Floating Support Menu (match v2 behavior) */}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <Button
+          onClick={() => {
+            setChatOpen(true);
+            setFabOpen(false);
+          }}
+          className={`h-12 w-12 rounded-full shadow-premium-lg bg-[#ff2801] hover:bg-[#e62401] text-white transition-all ${
+            fabOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"
+          }`}
+          size="icon"
+          title="Chat"
+        >
+          <MessageSquare className="h-5 w-5" />
+        </Button>
+        <Button
+          onClick={() => {
+            setFeedbackOpen(true);
+            setFabOpen(false);
+          }}
+          className={`h-12 w-12 rounded-full shadow-premium-lg bg-[#ff8a00] hover:bg-[#ff7a00] text-white transition-all ${
+            fabOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"
+          }`}
+          size="icon"
+          title="Feedback"
+        >
+          <LifeBuoy className="h-5 w-5" />
+        </Button>
+        <Button
+          onClick={() => setFabOpen(!fabOpen)}
+          className="h-14 w-14 rounded-full shadow-premium-lg bg-primary hover:bg-primary/90 text-white"
+          size="icon"
+          title="Quick Actions"
+        >
+          {fabOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
+        </Button>
+      </div>
     </div>
   );
 }
