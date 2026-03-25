@@ -39,13 +39,14 @@ import {
   List,
   Plus,
   Timer,
+  LifeBuoy,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { addHours, format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfDay, subDays } from "date-fns";
 import { toast } from "sonner";
 import { Link, useLocation } from "wouter";
 import { GlobalChatWidget } from "@/components/GlobalChatWidget";
-import { NotesWidget } from "@/components/NotesWidget";
+import { FeedbackDialog } from "@/components/FeedbackDialog";
 import { NotificationSidebar } from "@/components/NotificationSidebar";
 import { CalendarSidebar } from "@/components/CalendarSidebar";
 import { QuickMeetingSidebar } from "@/components/QuickMeetingSidebar";
@@ -149,6 +150,9 @@ function EmployeeDashboard() {
   const [overtimeProjectId, setOvertimeProjectId] = useState("");
   const [overtimeTaskId, setOvertimeTaskId] = useState("");
   const [overtimeDescription, setOvertimeDescription] = useState("");
+  const [fabOpen, setFabOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
 
   const handleLogout = async () => {
@@ -1298,9 +1302,47 @@ function EmployeeDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Global Chat Widget */}
-      <NotesWidget />
-      <GlobalChatWidget />
+      {/* Global Chat + Feedback */}
+      <GlobalChatWidget open={chatOpen} onOpenChange={setChatOpen} hideLauncher />
+      <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
+
+      {/* Floating Support Menu */}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <Button
+          onClick={() => {
+            setChatOpen(true);
+            setFabOpen(false);
+          }}
+          className={`h-12 w-12 rounded-full shadow-premium-lg bg-[#ff2801] hover:bg-[#e62401] text-white transition-all ${
+            fabOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"
+          }`}
+          size="icon"
+          title="Chat"
+        >
+          <MessageSquare className="h-5 w-5" />
+        </Button>
+        <Button
+          onClick={() => {
+            setFeedbackOpen(true);
+            setFabOpen(false);
+          }}
+          className={`h-12 w-12 rounded-full shadow-premium-lg bg-[#ff8a00] hover:bg-[#ff7a00] text-white transition-all ${
+            fabOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"
+          }`}
+          size="icon"
+          title="Feedback"
+        >
+          <LifeBuoy className="h-5 w-5" />
+        </Button>
+        <Button
+          onClick={() => setFabOpen(!fabOpen)}
+          className="h-14 w-14 rounded-full shadow-premium-lg bg-primary hover:bg-primary/90 text-white"
+          size="icon"
+          title="Quick Actions"
+        >
+          {fabOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
+        </Button>
+      </div>
 
       {/* Notification Sidebar */}
       <NotificationSidebar 
