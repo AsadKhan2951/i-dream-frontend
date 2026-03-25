@@ -478,6 +478,7 @@ function EmployeeDashboard() {
   );
 
   const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -492,7 +493,7 @@ function EmployeeDashboard() {
       {/* Sidebar */}
       <aside
         className={`${
-          sidebarCollapsed ? "w-20" : "w-64"
+          showCollapsed ? "w-20" : "w-64"
         } bg-card border-r transition-all duration-300 flex flex-col fixed lg:relative inset-y-0 left-0 z-50 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
@@ -505,20 +506,30 @@ function EmployeeDashboard() {
       >
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
-          {!sidebarCollapsed && (
+          {!showCollapsed && (
             <img src={logoSrc} alt="Rad.flow" className="h-8" style={{width: '115px', height: '61px'}} />
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          >
-            {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-          </Button>
+          {isMobile ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            >
+              {showCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            </Button>
+          )}
         </div>
 
         {/* Search */}
-        {!sidebarCollapsed && (
+        {!showCollapsed && (
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -543,10 +554,11 @@ function EmployeeDashboard() {
                 <Link key={item.path} href={item.path}>
                   <Button
                     variant={isActive ? "secondary" : "ghost"}
-                    className={`relative w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+                    className={`relative w-full ${showCollapsed ? "justify-center" : "justify-start"}`}
+                    onClick={() => setSidebarOpen(false)}
                   >
                     <Icon className="h-5 w-5" />
-                    {!sidebarCollapsed && (
+                    {!showCollapsed && (
                       <>
                         <span className="ml-3 flex-1 text-left">{item.label}</span>
                         {item.path === "/chat" && unreadChatCount > 0 && (
@@ -556,7 +568,7 @@ function EmployeeDashboard() {
                         )}
                       </>
                     )}
-                    {sidebarCollapsed && item.path === "/chat" && unreadChatCount > 0 && (
+                    {showCollapsed && item.path === "/chat" && unreadChatCount > 0 && (
                       <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
                     )}
                   </Button>
@@ -571,10 +583,10 @@ function EmployeeDashboard() {
           <Button
             variant="ghost"
             onClick={handleLogout}
-            className={`w-full ${sidebarCollapsed ? "justify-center" : "justify-start"} text-red-500 hover:text-red-600 hover:bg-red-500/10`}
+            className={`w-full ${showCollapsed ? "justify-center" : "justify-start"} text-red-500 hover:text-red-600 hover:bg-red-500/10`}
           >
             <LogOut className="h-5 w-5" />
-            {!sidebarCollapsed && <span className="ml-3">Logout</span>}
+            {!showCollapsed && <span className="ml-3">Logout</span>}
           </Button>
         </div>
       </aside>
