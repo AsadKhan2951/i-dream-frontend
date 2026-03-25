@@ -364,7 +364,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             </div>
           </div>
         </div>
-        </div>
 
         {/* Page Content */}
         <div className="p-4 pb-24 md:pb-4">
