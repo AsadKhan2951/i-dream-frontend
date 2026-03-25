@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "@/components/AdminLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,14 @@ import {
   MapPin,
   Wifi,
   Bell,
+  Map,
 } from "lucide-react";
 import { Link } from "wouter";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Bar } from "recharts";
 import { trpc } from "@/lib/trpc";
 import { format, formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -39,6 +41,8 @@ export default function AdminDashboard() {
   const { data: resourcePerformance = [] } = trpc.admin.getResourcePerformance.useQuery();
   const { data: notifications = [] } = trpc.notifications.getAll.useQuery();
   const utils = trpc.useUtils();
+  const [addressByUserId, setAddressByUserId] = useState<Record<string, string>>({});
+  const [selectedLocation, setSelectedLocation] = useState<any | null>(null);
 
   const refreshAll = () => {
     utils.admin.getEmployeeStatusSnapshot.invalidate();
@@ -49,6 +53,24 @@ export default function AdminDashboard() {
     utils.admin.getAverageHours.invalidate();
     utils.admin.getResourcePerformance.invalidate();
     utils.notifications.getAll.invalidate();
+  };
+
+  const openLocationDialog = async (emp: any) => {
+    setSelectedLocation(emp);
+    if (!emp?.location?.lat || !emp?.location?.lng) return;
+    if (emp.location?.address || addressByUserId[emp.id]) return;
+
+    try {
+      const data = await utils.geo.reverseGeocode.fetch({
+        lat: emp.location.lat,
+        lng: emp.location.lng,
+      });
+      if (data?.address) {
+        setAddressByUserId((prev) => ({ ...prev, [emp.id]: data.address }));
+      }
+    } catch {
+      // ignore reverse geocode failures
+    }
   };
 
   const pendingLeaves = useMemo(
@@ -72,6 +94,66 @@ export default function AdminDashboard() {
   const mapUrl = mapTarget
     ? `https://www.google.com/maps?q=${mapTarget.location.lat},${mapTarget.location.lng}`
     : undefined;
+
+  useEffect(() => {
+    let active = true;
+    const missing = onlineEmployees.filter(
+      (emp: any) =>
+        emp.location?.lat &&
+        emp.location?.lng &&
+        !emp.location?.address &&
+        !addressByUserId[emp.id]
+    );
+    if (missing.length === 0) return;
+
+    (async () => {
+      const results = await Promise.all(
+        missing.map((emp: any) =>
+          utils.geo.reverseGeocode
+            .fetch({ lat: emp.location.lat, lng: emp.location.lng })
+            .then((data) => ({ id: emp.id, address: data?.address }))
+            .catch(() => null)
+        )
+      );
+
+      if (!active) return;
+      setAddressByUserId((prev) => {
+        const next = { ...prev };
+        results.forEach((item) => {
+          if (item?.address) {
+            next[item.id] = item.address;
+          }
+        });
+        return next;
+      });
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [addressByUserId, onlineEmployees, utils.geo.reverseGeocode]);
+
+  const selectedAddress = selectedLocation
+    ? addressByUserId[selectedLocation.id] ||
+      selectedLocation.location?.address ||
+      "Address not available"
+    : "";
+  const selectedLat = selectedLocation?.location?.lat;
+  const selectedLng = selectedLocation?.location?.lng;
+  const selectedAccuracy = selectedLocation?.location?.accuracy;
+  const selectedCapturedAt = selectedLocation?.location?.capturedAt;
+  const selectedDistance =
+    typeof selectedLocation?.locationDistanceKm === "number"
+      ? `${selectedLocation.locationDistanceKm.toFixed(1)} km from office`
+      : null;
+  const selectedMapEmbed =
+    selectedLat && selectedLng
+      ? `https://maps.google.com/maps?q=${selectedLat},${selectedLng}&z=15&output=embed`
+      : null;
+  const selectedMapLink =
+    selectedLat && selectedLng
+      ? `https://www.google.com/maps?q=${selectedLat},${selectedLng}`
+      : null;
 
   const performanceData = useMemo(() => {
     return resourcePerformance.map((item: any) => ({
@@ -135,7 +217,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold">
-                Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {user?.name || "Admin"}! 👋
+                Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {user?.name || "Admin"}!
               </h2>
               <p className="text-sm text-muted-foreground">
                 Here's what's happening with your team today
@@ -263,11 +345,11 @@ export default function AdminDashboard() {
                     typeof emp.locationDistanceKm === "number"
                       ? `${emp.locationDistanceKm.toFixed(1)} km from office`
                       : null;
+                  const hasCoords = !!(emp.location?.lat && emp.location?.lng);
                   const locationLabel =
+                    addressByUserId[emp.id] ||
                     emp.location?.address ||
-                    (emp.location?.lat && emp.location?.lng
-                      ? `${emp.location.lat.toFixed(4)}, ${emp.location.lng.toFixed(4)}`
-                      : "Location not available");
+                    (hasCoords ? "View location" : "Location not available");
                   const officeTag =
                     emp.locationTag === "office" ? "Office" : emp.locationTag === "remote" ? "Remote" : null;
 
@@ -286,7 +368,17 @@ export default function AdminDashboard() {
                             <p className="text-xs text-muted-foreground">{emp.designation}</p>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <MapPin className="h-3.5 w-3.5 text-emerald-300" />
-                              <span className="truncate max-w-[320px]">{locationLabel}</span>
+                              {hasCoords ? (
+                                <button
+                                  type="button"
+                                  onClick={() => openLocationDialog(emp)}
+                                  className="truncate max-w-[320px] text-left text-emerald-100 hover:text-primary hover:underline underline-offset-4"
+                                >
+                                  {locationLabel}
+                                </button>
+                              ) : (
+                                <span className="truncate max-w-[320px]">{locationLabel}</span>
+                              )}
                               {distanceLabel ? (
                                 <span className="text-orange-300">({distanceLabel})</span>
                               ) : null}
@@ -546,16 +638,63 @@ export default function AdminDashboard() {
           </div>
         </Card>
       </div>
+
+      <Dialog open={!!selectedLocation} onOpenChange={(open) => !open && setSelectedLocation(null)}>
+        <DialogContent className="max-w-xl bg-[#141414] border border-white/5">
+          <DialogHeader>
+            <DialogTitle>Location Details</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0f0f0f]">
+              {selectedMapEmbed ? (
+                <iframe
+                  title="Employee location"
+                  src={selectedMapEmbed}
+                  className="h-48 w-full"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex h-48 items-center justify-center text-xs text-muted-foreground">
+                  Map not available
+                </div>
+              )}
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-emerald-300" />
+                <span className="font-medium">{selectedAddress}</span>
+              </div>
+              {selectedLat && selectedLng ? (
+                <div className="text-xs text-muted-foreground">
+                  {selectedLat.toFixed(5)}, {selectedLng.toFixed(5)}
+                </div>
+              ) : null}
+              {selectedAccuracy ? (
+                <div className="text-xs text-muted-foreground">Accuracy: {Math.round(selectedAccuracy)} m</div>
+              ) : null}
+              {selectedCapturedAt ? (
+                <div className="text-xs text-muted-foreground">
+                  Captured {formatDistanceToNow(new Date(selectedCapturedAt), { addSuffix: true })}
+                </div>
+              ) : null}
+              {selectedDistance ? (
+                <div className="text-xs text-orange-300">{selectedDistance}</div>
+              ) : null}
+              {selectedMapLink ? (
+                <a
+                  href={selectedMapLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 text-xs text-primary hover:underline"
+                >
+                  <Map className="h-3.5 w-3.5" />
+                  Open in Maps
+                </a>
+              ) : null}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 }
-
-
-
-
-
-
-
-
-
-
