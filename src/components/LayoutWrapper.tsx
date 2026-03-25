@@ -27,6 +27,7 @@ import {
   FolderKanban,
   Users,
   Shield,
+  User,
 } from "lucide-react";
 import { useLocation, Link } from "wouter";
 import { GlobalChatWidget } from "@/components/GlobalChatWidget";
@@ -88,10 +89,20 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     ...(user?.role === "admin" ? [{ icon: Shield, label: "Admin Panel", path: "/admin" }] : []),
   ];
 
+  const isCentralActive = () => location === "/dashboard";
+  const bottomNavItems = [
+    { icon: Home, label: "Central", path: "/dashboard", isActive: isCentralActive() },
+    { icon: MessageSquare, label: "Chat", path: "/chat", isActive: location === "/chat" },
+    { icon: BarChart3, label: "Reports", path: "/reports", isActive: location.startsWith("/reports") },
+    { icon: FolderKanban, label: "Projects", path: "/projects", isActive: location.startsWith("/projects") },
+    { icon: User, label: "Account", path: "/account", isActive: location === "/account" },
+  ];
+
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
   const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -106,7 +117,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
       {/* Sidebar */}
       <aside
         className={`${
-          sidebarCollapsed ? "w-20" : "w-64"
+          showCollapsed ? "w-20" : "w-64"
         } bg-card border-r transition-all duration-300 flex flex-col fixed lg:relative inset-y-0 left-0 z-50 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
@@ -119,7 +130,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
       >
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
-          {!sidebarCollapsed && (
+          {!showCollapsed && (
             <img
               src={logoSrc}
               alt="Rad.flow"
@@ -133,12 +144,12 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="hidden lg:flex"
           >
-            {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            {showCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
           </Button>
         </div>
 
         {/* Search */}
-        {!sidebarCollapsed && (
+        {!showCollapsed && (
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -163,11 +174,11 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
                 <Link key={item.path} href={item.path}>
                   <Button
                     variant={isActive ? "secondary" : "ghost"}
-                    className={`relative w-full ${sidebarCollapsed ? "justify-center px-0" : "justify-start"}`}
+                    className={`relative w-full ${showCollapsed ? "justify-center px-0" : "justify-start"}`}
                     onClick={() => setSidebarOpen(false)}
                   >
                     <Icon className="h-5 w-5" />
-                    {!sidebarCollapsed && (
+                    {!showCollapsed && (
                       <>
                         <span className="ml-3 flex-1 text-left">{item.label}</span>
                         {item.path === "/chat" && unreadChatCount > 0 && (
@@ -177,7 +188,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
                         )}
                       </>
                     )}
-                    {sidebarCollapsed && item.path === "/chat" && unreadChatCount > 0 && (
+                    {showCollapsed && item.path === "/chat" && unreadChatCount > 0 && (
                       <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
                     )}
                   </Button>
@@ -192,7 +203,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           <Button
             variant="ghost"
             onClick={toggleTheme}
-            className={`w-full ${sidebarCollapsed ? "justify-center px-0" : "justify-start"}`}
+            className={`w-full ${showCollapsed ? "justify-center px-0" : "justify-start"}`}
           >
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
@@ -200,16 +211,16 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           <Button
             variant="ghost"
             onClick={handleLogout}
-            className={`w-full ${sidebarCollapsed ? "justify-center px-0" : "justify-start"} text-red-500 hover:text-red-600 hover:bg-red-500/10`}
+            className={`w-full ${showCollapsed ? "justify-center px-0" : "justify-start"} text-red-500 hover:text-red-600 hover:bg-red-500/10`}
           >
             <LogOut className="h-5 w-5" />
-            {!sidebarCollapsed && <span className="ml-3">Logout</span>}
+            {!showCollapsed && <span className="ml-3">Logout</span>}
           </Button>
         </div>
       </aside>
 
       {/* Global Chat Widget */}
-      <GlobalChatWidget />
+      <GlobalChatWidget hideLauncher />
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto w-full">
@@ -225,22 +236,55 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           <img
             src={logoSrc}
             alt="Rad.flow"
-            className="h-8"
-            style={{ width: "115px", height: "61px" }}
+            className="h-7"
+            style={{ width: "90px", height: "36px" }}
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-          >
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Link href="/notifications">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+              >
+                <Bell className="h-5 w-5" />
+                <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+              </Button>
+            </Link>
+            <Link href="/account">
+              <Button
+                variant="ghost"
+                size="icon"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
         </div>
 
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
           {children}
         </div>
       </main>
+
+      {/* Mobile Bottom Nav */}
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <div className="rounded-2xl border border-white/10 bg-[#101010]/95 shadow-premium-lg backdrop-blur px-3 py-2">
+          <div className="flex items-center justify-between">
+            {bottomNavItems.map((item) => (
+              <Link key={item.label} href={item.path}>
+                <button
+                  className={`flex flex-col items-center gap-1 px-2 py-1 text-[11px] ${
+                    item.isActive ? "text-[#ff2801]" : "text-muted-foreground"
+                  }`}
+                >
+                  <item.icon className={`h-4 w-4 ${item.isActive ? "text-[#ff2801]" : ""}`} />
+                  <span>{item.label}</span>
+                </button>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
