@@ -28,7 +28,8 @@ import {
   FileText,
   Plus,
   MessageSquare,
-  LifeBuoy
+  LifeBuoy,
+  User
 } from "lucide-react";
 import { Link, useLocation, Redirect } from "wouter";
 import { trpc } from "@/lib/trpc";
@@ -105,6 +106,15 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   ];
 
   const isActive = (path: string) => location === path;
+  const isCentralActive = () => location === "/admin" || location === "/dashboard";
+
+  const bottomNavItems = [
+    { icon: Home, label: "Central", path: "/dashboard", isActive: isCentralActive() },
+    { icon: MessageSquare, label: "Chat", path: "/chat", isActive: location === "/chat" },
+    { icon: BarChart3, label: "Reports", path: "/admin/reports", isActive: location.startsWith("/admin/reports") },
+    { icon: FolderKanban, label: "Projects", path: "/admin/projects", isActive: location.startsWith("/admin/projects") },
+    { icon: User, label: "Account", path: "/account", isActive: location === "/account" },
+  ];
 
   const recentNotifications = [
     ...(unreadChatCount > 0
@@ -273,7 +283,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         </div>
 
         {/* Page Content */}
-        <div className="p-4">
+        <div className="p-4 pb-24 md:pb-4">
           {children}
         </div>
       </main>
@@ -281,8 +291,28 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       <GlobalChatWidget open={chatOpen} onOpenChange={setChatOpen} hideLauncher />
       <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
 
+      {/* Mobile Bottom Nav */}
+      <div className="fixed bottom-4 left-20 right-4 z-40 md:hidden">
+        <div className="rounded-2xl border border-white/10 bg-[#101010]/95 shadow-premium-lg backdrop-blur px-3 py-2">
+          <div className="flex items-center justify-between">
+            {bottomNavItems.map((item) => (
+              <Link key={item.label} href={item.path}>
+                <button
+                  className={`flex flex-col items-center gap-1 px-2 py-1 text-[11px] ${
+                    item.isActive ? "text-[#ff2801]" : "text-muted-foreground"
+                  }`}
+                >
+                  <item.icon className={`h-4 w-4 ${item.isActive ? "text-[#ff2801]" : ""}`} />
+                  <span>{item.label}</span>
+                </button>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Floating Support Menu (match v2 behavior) */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+      <div className="fixed bottom-6 right-6 z-50 hidden md:flex items-center gap-3">
         <Button
           onClick={() => {
             setChatOpen(true);
