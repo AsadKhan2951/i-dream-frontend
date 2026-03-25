@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "https://i-dream-backend-production.up.railway.app/api/$1"
+    },
+    {
+      "source": "/socket.io/(.*)",
+      "destination": "https://i-dream-backend-production.up.railway.app/socket.io/$1"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "https://i-dream-backend-production.up.railway.app/uploads/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

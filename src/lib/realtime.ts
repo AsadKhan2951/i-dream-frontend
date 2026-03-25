@@ -1,12 +1,13 @@
 import { io, Socket } from "socket.io-client";
+import { getApiBaseUrl } from "@/lib/apiBase";
 
 let socket: Socket | null = null;
 
 export function getRealtimeSocket() {
   if (socket) return socket;
 
-  const apiBaseUrl = import.meta.env.VITE_API_URL?.trim();
-  const socketUrl = apiBaseUrl ? apiBaseUrl.replace(/\/+$/, "") : window.location.origin;
+  const apiBaseUrl = getApiBaseUrl();
+  const socketUrl = apiBaseUrl || window.location.origin;
 
   socket = io(socketUrl, {
     withCredentials: true,

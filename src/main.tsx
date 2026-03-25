@@ -1,4 +1,5 @@
 import { trpc } from "@/lib/trpc";
+import { getApiBaseUrl } from "@/lib/apiBase";
 import { UNAUTHED_ERR_MSG } from '@shared/const';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
@@ -37,10 +38,8 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
-const apiBaseUrl = import.meta.env.VITE_API_URL?.trim();
-const trpcApiUrl = apiBaseUrl
-  ? `${apiBaseUrl.replace(/\/+$/, "")}/api/trpc`
-  : "/api/trpc";
+const apiBaseUrl = getApiBaseUrl();
+const trpcApiUrl = apiBaseUrl ? `${apiBaseUrl}/api/trpc` : "/api/trpc";
 
 const trpcClient = trpc.createClient({
   links: [

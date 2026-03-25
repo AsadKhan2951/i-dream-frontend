@@ -143,9 +143,10 @@ export default function EmployeeManagement() {
   };
 
   const apiBaseUrl = import.meta.env.VITE_API_URL?.trim();
-  const uploadEndpoint = apiBaseUrl
-    ? `${apiBaseUrl.replace(/\/+$/, "")}/api/upload-employee-document`
-    : "/api/upload-employee-document";
+  const useProxy = import.meta.env.VITE_USE_PROXY === "true";
+  const uploadEndpoint = useProxy || !apiBaseUrl
+    ? "/api/upload-employee-document"
+    : `${apiBaseUrl.replace(/\/+$/, "")}/api/upload-employee-document`;
 
   const uploadDocument = async (file: File, docType: "cnic_front" | "cnic_back" | "offer_letter") => {
     const formData = new FormData();
