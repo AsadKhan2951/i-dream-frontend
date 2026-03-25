@@ -362,18 +362,18 @@ export default function AdminDashboard() {
                           <div className="space-y-1">
                             <p className="text-sm font-semibold">{emp.name}</p>
                             <p className="text-xs text-muted-foreground">{emp.designation}</p>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground min-w-0">
                               <MapPin className="h-3.5 w-3.5 text-emerald-300" />
                               {hasCoords ? (
                                 <button
                                   type="button"
                                   onClick={() => openLocationDialog(emp)}
-                                  className="truncate max-w-[320px] text-left text-emerald-100 hover:text-primary hover:underline underline-offset-4"
+                                  className="max-w-full text-left text-emerald-100 hover:text-primary hover:underline underline-offset-4 break-words line-clamp-2"
                                 >
                                   {locationLabel}
                                 </button>
                               ) : (
-                                <span className="truncate max-w-[320px]">{locationLabel}</span>
+                                <span className="max-w-full break-words line-clamp-2">{locationLabel}</span>
                               )}
                               {distanceLabel ? (
                                 <span className="text-orange-300">({distanceLabel})</span>
