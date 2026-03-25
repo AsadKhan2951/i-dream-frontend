@@ -249,119 +249,119 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         {/* Compact Header */}
         <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
           <div className="flex items-center justify-between px-4 py-3">
-            {isMobile ? (
-              <>
-                <div className="w-10 flex items-center justify-start">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9"
-                    onClick={() => setMobileSidebarOpen(true)}
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </div>
-                <div className="flex-1 flex items-center justify-center">
-                  <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
-                </div>
-                <div className="w-16 flex items-center justify-end gap-2">
-                  <div className="relative">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => setShowNotifications(!showNotifications)}
-                    >
-                      <Bell className="h-4 w-4" />
-                      {(unreadChatCount > 0 || recentNotifications.length > 0) && (
-                        <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                      )}
-                    </Button>
-
-                    {showNotifications && (
-                      <Card className="absolute right-0 top-12 w-72 p-4 shadow-lg">
-                        <h3 className="font-semibold mb-3 text-sm">Recent Activity</h3>
-                        <div className="space-y-3">
-                          {recentNotifications.map((notif) => (
-                            <div key={notif.id} className="flex gap-2 text-xs">
-                              <Activity className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                              <div className="flex-1">
-                                <p className="text-sm">{notif.message}</p>
-                                <p className="text-muted-foreground">{notif.time}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <Button variant="link" className="w-full mt-3 h-8 text-xs">
-                          View All Notifications
-                        </Button>
-                      </Card>
-                    )}
-                  </div>
-                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
-                    <Settings className="h-4 w-4" />
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
-                </div>
-
-                <div className="flex items-center gap-2">
-              {/* Universal Search */}
-              <div className="relative hidden md:block">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search employees, reports..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 w-72 h-9 rounded-full bg-muted/40"
-                />
-              </div>
-
-              {/* Notification Center */}
-              <div className="relative">
+            {/* Mobile Header */}
+            <div className="md:hidden flex items-center w-full">
+              <div className="w-10 flex items-center justify-start">
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-9 w-9"
-                  onClick={() => setShowNotifications(!showNotifications)}
+                  onClick={() => setMobileSidebarOpen(true)}
                 >
-                  <Bell className="h-4 w-4" />
-                  {(unreadChatCount > 0 || recentNotifications.length > 0) && (
-                    <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                  )}
+                  <Menu className="h-5 w-5" />
                 </Button>
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
+              </div>
+              <div className="w-16 flex items-center justify-end gap-2">
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={() => setShowNotifications(!showNotifications)}
+                  >
+                    <Bell className="h-4 w-4" />
+                    {(unreadChatCount > 0 || recentNotifications.length > 0) && (
+                      <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                    )}
+                  </Button>
 
-                {showNotifications && (
-                  <Card className="absolute right-0 top-12 w-80 p-4 shadow-lg">
-                    <h3 className="font-semibold mb-3 text-sm">Recent Activity</h3>
-                    <div className="space-y-3">
-                      {recentNotifications.map((notif) => (
-                        <div key={notif.id} className="flex gap-2 text-xs">
-                          <Activity className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <p className="text-sm">{notif.message}</p>
-                            <p className="text-muted-foreground">{notif.time}</p>
+                  {showNotifications && (
+                    <Card className="absolute right-0 top-12 w-72 p-4 shadow-lg">
+                      <h3 className="font-semibold mb-3 text-sm">Recent Activity</h3>
+                      <div className="space-y-3">
+                        {recentNotifications.map((notif) => (
+                          <div key={notif.id} className="flex gap-2 text-xs">
+                            <Activity className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                              <p className="text-sm">{notif.message}</p>
+                              <p className="text-muted-foreground">{notif.time}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                    <Button variant="link" className="w-full mt-3 h-8 text-xs">
-                      View All Notifications
-                    </Button>
-                  </Card>
-                )}
+                        ))}
+                      </div>
+                      <Button variant="link" className="w-full mt-3 h-8 text-xs">
+                        View All Notifications
+                      </Button>
+                    </Card>
+                  )}
+                </div>
+                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden md:flex items-center justify-between w-full">
+              <div>
+                <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
               </div>
 
-                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
-                    <Settings className="h-4 w-4" />
-                  </Button>
+              <div className="flex items-center gap-2">
+                {/* Universal Search */}
+                <div className="relative hidden md:block">
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search employees, reports..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 w-72 h-9 rounded-full bg-muted/40"
+                  />
                 </div>
-              </>
-            )}
+
+                {/* Notification Center */}
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={() => setShowNotifications(!showNotifications)}
+                  >
+                    <Bell className="h-4 w-4" />
+                    {(unreadChatCount > 0 || recentNotifications.length > 0) && (
+                      <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                    )}
+                  </Button>
+
+                  {showNotifications && (
+                    <Card className="absolute right-0 top-12 w-80 p-4 shadow-lg">
+                      <h3 className="font-semibold mb-3 text-sm">Recent Activity</h3>
+                      <div className="space-y-3">
+                        {recentNotifications.map((notif) => (
+                          <div key={notif.id} className="flex gap-2 text-xs">
+                            <Activity className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                              <p className="text-sm">{notif.message}</p>
+                              <p className="text-muted-foreground">{notif.time}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <Button variant="link" className="w-full mt-3 h-8 text-xs">
+                        View All Notifications
+                      </Button>
+                    </Card>
+                  )}
+                </div>
+
+                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
         </div>

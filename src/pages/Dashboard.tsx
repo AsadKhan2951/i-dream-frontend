@@ -40,6 +40,7 @@ import {
   Plus,
   Timer,
   LifeBuoy,
+  User,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { addHours, format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfDay, subDays } from "date-fns";
@@ -117,7 +118,7 @@ function EmployeeDashboard() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const isMobile = useIsMobile();
   const [timeDialogOpen, setTimeDialogOpen] = useState(false);
@@ -463,6 +464,15 @@ function EmployeeDashboard() {
     ...(user?.role === "admin" ? [{ icon: Shield, label: "Admin Panel", path: "/admin" }] : []),
   ];
 
+  const isCentralActive = () => location === "/dashboard";
+  const bottomNavItems = [
+    { icon: Home, label: "Central", path: "/dashboard", isActive: isCentralActive() },
+    { icon: MessageSquare, label: "Chat", path: "/chat", isActive: location === "/chat" },
+    { icon: BarChart3, label: "Reports", path: "/reports", isActive: location.startsWith("/reports") },
+    { icon: FolderKanban, label: "Projects", path: "/projects", isActive: location.startsWith("/projects") },
+    { icon: User, label: "Account", path: "/account", isActive: location === "/account" },
+  ];
+
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -595,14 +605,14 @@ function EmployeeDashboard() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleTheme}
+              onClick={() => setLocation("/account")}
             >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              <Settings className="h-5 w-5" />
             </Button>
           </div>
         </div>
 
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
           {/* Greeting Section */}
           <div className="mb-6 md:mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -1307,7 +1317,7 @@ function EmployeeDashboard() {
       <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
 
       {/* Floating Support Menu */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+      <div className="fixed bottom-6 right-6 z-50 hidden md:flex items-center gap-3">
         <Button
           onClick={() => {
             setChatOpen(true);
@@ -1361,6 +1371,26 @@ function EmployeeDashboard() {
         isOpen={meetingSidebarOpen} 
         onClose={() => setMeetingSidebarOpen(false)} 
       />
+
+      {/* Mobile Bottom Nav */}
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <div className="rounded-2xl border border-white/10 bg-[#101010]/95 shadow-premium-lg backdrop-blur px-3 py-2">
+          <div className="flex items-center justify-between">
+            {bottomNavItems.map((item) => (
+              <button
+                key={item.label}
+                className={`flex flex-col items-center gap-1 px-2 py-1 text-[11px] ${
+                  item.isActive ? "text-[#ff2801]" : "text-muted-foreground"
+                }`}
+                onClick={() => setLocation(item.path)}
+              >
+                <item.icon className={`h-4 w-4 ${item.isActive ? "text-[#ff2801]" : ""}`} />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Break Overlay */}
       {breakOverlayOpen && activeBreak && (
