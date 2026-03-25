@@ -15,6 +15,7 @@ import {
   Calendar,
   Clock,
   X,
+  Menu,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -49,6 +50,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const isMobile = useIsMobile();
   const [location] = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
@@ -57,6 +59,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
   const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   const { data: chatMessages } = trpc.chat.getMessages.useQuery(
     { limit: 100 },
@@ -137,11 +140,21 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
 
   return (
     <div className="h-screen bg-background flex overflow-hidden">
+      {isMobile && mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
       {/* Sidebar */}
       <aside
         className={`${
-          sidebarCollapsed ? "w-20" : "w-64"
-        } bg-card border-r transition-all duration-300 flex flex-col shrink-0 h-screen sticky top-0`}
+          isMobile
+            ? `fixed inset-y-0 left-0 z-50 w-64 bg-card border-r transition-transform duration-300 ${
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+              }`
+            : `${showCollapsed ? "w-20" : "w-64"} bg-card border-r transition-all duration-300 shrink-0 h-screen sticky top-0`
+        } flex flex-col`}
         onMouseEnter={() => {
           if (!isMobile) setSidebarCollapsed(false);
         }}
@@ -151,20 +164,26 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       >
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
-          {!sidebarCollapsed && (
+          {!showCollapsed && (
             <img src={logoSrc} alt="Rad.flow" className="h-8" style={{ width: "115px", height: "61px" }} />
           )}
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onClick={() => {
+              if (isMobile) {
+                setMobileSidebarOpen(false);
+              } else {
+                setSidebarCollapsed(!sidebarCollapsed);
+              }
+            }}
           >
-            {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            {isMobile ? <X className="h-5 w-5" /> : showCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
           </Button>
         </div>
 
         {/* Search */}
-        {!sidebarCollapsed && (
+        {!showCollapsed && (
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -185,10 +204,13 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <Link key={item.path} href={item.path}>
                 <Button
                   variant={isActive(item.path) ? "secondary" : "ghost"}
-                  className={`relative w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+                  className={`relative w-full ${showCollapsed ? "justify-center" : "justify-start"}`}
+                  onClick={() => {
+                    if (isMobile) setMobileSidebarOpen(false);
+                  }}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
-                  {!sidebarCollapsed && <span className="ml-3 text-sm">{item.label}</span>}
+                  {!showCollapsed && <span className="ml-3 text-sm">{item.label}</span>}
                 </Button>
               </Link>
             ))}
@@ -201,20 +223,23 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
             <Button
               variant="outline"
               size="sm"
-              className={`w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+              className={`w-full ${showCollapsed ? "justify-center" : "justify-start"}`}
+              onClick={() => {
+                if (isMobile) setMobileSidebarOpen(false);
+              }}
             >
               <Home className="h-4 w-4 shrink-0" />
-              {!sidebarCollapsed && <span className="ml-2 text-sm">Employee View</span>}
+              {!showCollapsed && <span className="ml-2 text-sm">Employee View</span>}
             </Button>
           </Link>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className={`w-full ${sidebarCollapsed ? "justify-center" : "justify-start"}`}
+            className={`w-full ${showCollapsed ? "justify-center" : "justify-start"}`}
           >
             <LogOut className="h-4 w-4 shrink-0" />
-            {!sidebarCollapsed && <span className="ml-2 text-sm">Logout</span>}
+            {!showCollapsed && <span className="ml-2 text-sm">Logout</span>}
           </Button>
         </div>
       </aside>
@@ -224,11 +249,67 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         {/* Compact Header */}
         <div className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b">
           <div className="flex items-center justify-between px-4 py-3">
-            <div>
-              <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
-            </div>
+            {isMobile ? (
+              <>
+                <div className="w-10 flex items-center justify-start">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={() => setMobileSidebarOpen(true)}
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="flex-1 flex items-center justify-center">
+                  <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
+                </div>
+                <div className="w-16 flex items-center justify-end gap-2">
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9"
+                      onClick={() => setShowNotifications(!showNotifications)}
+                    >
+                      <Bell className="h-4 w-4" />
+                      {(unreadChatCount > 0 || recentNotifications.length > 0) && (
+                        <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                      )}
+                    </Button>
 
-            <div className="flex items-center gap-2">
+                    {showNotifications && (
+                      <Card className="absolute right-0 top-12 w-72 p-4 shadow-lg">
+                        <h3 className="font-semibold mb-3 text-sm">Recent Activity</h3>
+                        <div className="space-y-3">
+                          {recentNotifications.map((notif) => (
+                            <div key={notif.id} className="flex gap-2 text-xs">
+                              <Activity className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                              <div className="flex-1">
+                                <p className="text-sm">{notif.message}</p>
+                                <p className="text-muted-foreground">{notif.time}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <Button variant="link" className="w-full mt-3 h-8 text-xs">
+                          View All Notifications
+                        </Button>
+                      </Card>
+                    )}
+                  </div>
+                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <p className="text-sm text-muted-foreground">Welcome back, {user?.name}</p>
+                </div>
+
+                <div className="flex items-center gap-2">
               {/* Universal Search */}
               <div className="relative hidden md:block">
                 <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -275,11 +356,14 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 )}
               </div>
 
-              <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
-                <Settings className="h-4 w-4" />
-              </Button>
-            </div>
+                  <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
+                    <Settings className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
+        </div>
         </div>
 
         {/* Page Content */}
@@ -292,7 +376,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
       <FeedbackDialog open={feedbackOpen} onOpenChange={setFeedbackOpen} />
 
       {/* Mobile Bottom Nav */}
-      <div className="fixed bottom-4 left-20 right-4 z-40 md:hidden">
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
         <div className="rounded-2xl border border-white/10 bg-[#101010]/95 shadow-premium-lg backdrop-blur px-3 py-2">
           <div className="flex items-center justify-between">
             {bottomNavItems.map((item) => (

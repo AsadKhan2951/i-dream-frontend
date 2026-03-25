@@ -275,15 +275,29 @@ function DashboardLayoutContent({
       <SidebarInset>
         {isMobile && (
           <div className="flex border-b h-14 items-center justify-between bg-background/95 px-2 backdrop-blur supports-[backdrop-filter]:backdrop-blur sticky top-0 z-40">
-            <div className="flex items-center gap-2">
+            <div className="w-10 flex items-center justify-start">
               <SidebarTrigger className="h-9 w-9 rounded-lg bg-background" />
-              <div className="flex items-center gap-3">
-                <div className="flex flex-col gap-1">
-                  <span className="tracking-tight text-foreground">
-                    {activeMenuItem?.label ?? "Menu"}
-                  </span>
-                </div>
-              </div>
+            </div>
+            <div className="flex-1 flex items-center justify-center">
+              <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
+            </div>
+            <div className="w-16 flex items-center justify-end gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setLocation("/notifications")}
+              >
+                <Bell className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setLocation("/account")}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
             </div>
           </div>
         )}
