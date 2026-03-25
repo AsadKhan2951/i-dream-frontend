@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users, Home, Clock, ClipboardList, FolderKanban, FileText, MessageSquare, Calendar, DollarSign, Bell, Settings, Shield } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, Home, Clock, ClipboardList, FolderKanban, FileText, MessageSquare, Calendar, DollarSign, Bell, Settings, Shield, BarChart3, User } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
@@ -128,6 +128,15 @@ function DashboardLayoutContent({
     { icon: Bell, label: "Announcements", path: "/announcements" },
     { icon: Settings, label: "Account", path: "/account" },
     ...(user?.role === "admin" ? [{ icon: Shield, label: "Admin Panel", path: "/admin" }] : []),
+  ];
+
+  const isCentralActive = () => location === "/dashboard";
+  const bottomNavItems = [
+    { icon: Home, label: "Central", path: "/dashboard", isActive: isCentralActive() },
+    { icon: MessageSquare, label: "Chat", path: "/chat", isActive: location === "/chat" },
+    { icon: BarChart3, label: "Reports", path: "/reports", isActive: location.startsWith("/reports") },
+    { icon: FolderKanban, label: "Projects", path: "/projects", isActive: location.startsWith("/projects") },
+    { icon: User, label: "Account", path: "/account", isActive: location === "/account" },
   ];
 
   const activeMenuItem = menuItems.find(item => item.path === location);
@@ -301,8 +310,28 @@ function DashboardLayoutContent({
             </div>
           </div>
         )}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 p-4 pb-24 md:pb-4">{children}</main>
       </SidebarInset>
+
+      {/* Mobile Bottom Nav */}
+      <div className="fixed bottom-4 left-4 right-4 z-40 md:hidden">
+        <div className="rounded-2xl border border-white/10 bg-[#101010]/95 shadow-premium-lg backdrop-blur px-3 py-2">
+          <div className="flex items-center justify-between">
+            {bottomNavItems.map((item) => (
+              <button
+                key={item.label}
+                className={`flex flex-col items-center gap-1 px-2 py-1 text-[11px] ${
+                  item.isActive ? "text-[#ff2801]" : "text-muted-foreground"
+                }`}
+                onClick={() => setLocation(item.path)}
+              >
+                <item.icon className={`h-4 w-4 ${item.isActive ? "text-[#ff2801]" : ""}`} />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   );
 }
