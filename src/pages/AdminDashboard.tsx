@@ -58,7 +58,7 @@ export default function AdminDashboard() {
   const openLocationDialog = async (emp: any) => {
     setSelectedLocation(emp);
     if (!emp?.location?.lat || !emp?.location?.lng) return;
-    if (emp.location?.address || addressByUserId[emp.id]) return;
+    if (addressByUserId[emp.id]) return;
 
     try {
       const data = await utils.geo.reverseGeocode.fetch({
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
   );
   const mapTarget = onlineEmployees.find((emp: any) => emp.location?.lat && emp.location?.lng);
   const mapUrl = mapTarget
-    ? `https://www.google.com/maps?q=${mapTarget.location.lat},${mapTarget.location.lng}`
+    ? `https://www.google.com/maps?q=${mapTarget.location.lat},${mapTarget.location.lng}&hl=en`
     : undefined;
 
   useEffect(() => {
@@ -101,7 +101,6 @@ export default function AdminDashboard() {
       (emp: any) =>
         emp.location?.lat &&
         emp.location?.lng &&
-        !emp.location?.address &&
         !addressByUserId[emp.id]
     );
     if (missing.length === 0) return;
@@ -134,9 +133,7 @@ export default function AdminDashboard() {
   }, [addressByUserId, onlineEmployees, utils.geo.reverseGeocode]);
 
   const selectedAddress = selectedLocation
-    ? addressByUserId[selectedLocation.id] ||
-      selectedLocation.location?.address ||
-      "Address not available"
+    ? addressByUserId[selectedLocation.id] || "Address not available"
     : "";
   const selectedLat = selectedLocation?.location?.lat;
   const selectedLng = selectedLocation?.location?.lng;
@@ -148,11 +145,11 @@ export default function AdminDashboard() {
       : null;
   const selectedMapEmbed =
     selectedLat && selectedLng
-      ? `https://maps.google.com/maps?q=${selectedLat},${selectedLng}&z=15&output=embed`
+      ? `https://maps.google.com/maps?q=${selectedLat},${selectedLng}&z=15&output=embed&hl=en`
       : null;
   const selectedMapLink =
     selectedLat && selectedLng
-      ? `https://www.google.com/maps?q=${selectedLat},${selectedLng}`
+      ? `https://www.google.com/maps?q=${selectedLat},${selectedLng}&hl=en`
       : null;
 
   const performanceData = useMemo(() => {
@@ -348,7 +345,6 @@ export default function AdminDashboard() {
                   const hasCoords = !!(emp.location?.lat && emp.location?.lng);
                   const locationLabel =
                     addressByUserId[emp.id] ||
-                    emp.location?.address ||
                     (hasCoords ? "View location" : "Location not available");
                   const officeTag =
                     emp.locationTag === "office" ? "Office" : emp.locationTag === "remote" ? "Remote" : null;
