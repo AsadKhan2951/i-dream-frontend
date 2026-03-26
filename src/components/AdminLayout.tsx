@@ -1,4 +1,4 @@
-import { useMemo, useState, ReactNode } from "react";
+﻿import { useMemo, useState, ReactNode } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -58,7 +58,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
-  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   const { data: chatMessages } = trpc.chat.getMessages.useQuery(
@@ -133,7 +133,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     ...notifications.slice(0, 5).map((n: any) => ({
       id: n.id,
       type: n.type,
-      message: n.title ? `${n.title} — ${n.message}` : n.message,
+      message: n.title ? `${n.title} â€” ${n.message}` : n.message,
       time: n.createdAt ? new Date(n.createdAt).toLocaleString() : "",
     })),
   ];
@@ -165,7 +165,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!showCollapsed && (
-            <img src={logoSrc} alt="Rad.flow" className="h-8" style={{ width: "115px", height: "61px" }} />
+            <img src={logoSrc} alt="IDream Entertainment" className="h-8" style={{ width: "115px", height: "61px" }} />
           )}
           <Button
             variant="ghost"
@@ -262,7 +262,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 </Button>
               </div>
               <div className="flex-1 flex items-center justify-center">
-                <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
+                <img src={logoSrc} alt="IDream Entertainment" className="h-7" style={{ width: "90px", height: "36px" }} />
               </div>
               <div className="w-16 flex items-center justify-end gap-2">
                 <div className="relative">
@@ -434,3 +434,4 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     </div>
   );
 }
+

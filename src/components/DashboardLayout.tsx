@@ -1,4 +1,4 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+﻿import { useAuth } from "@/_core/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -140,7 +140,7 @@ function DashboardLayoutContent({
   ];
 
   const activeMenuItem = menuItems.find(item => item.path === location);
-  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
 
   useEffect(() => {
     if (isCollapsed) {
@@ -208,7 +208,7 @@ function DashboardLayoutContent({
                 <div className="flex items-center gap-2 min-w-0">
                   <img
                     src={logoSrc}
-                    alt="Rad.flow"
+                    alt="IDream Entertainment"
                     className="h-8 w-auto object-contain"
                     style={{ width: "115px", height: "61px" }}
                   />
@@ -288,7 +288,7 @@ function DashboardLayoutContent({
               <SidebarTrigger className="h-9 w-9 rounded-lg bg-background" />
             </div>
             <div className="flex-1 flex items-center justify-center">
-              <img src={logoSrc} alt="Rad.flow" className="h-7" style={{ width: "90px", height: "36px" }} />
+              <img src={logoSrc} alt="IDream Entertainment" className="h-7" style={{ width: "90px", height: "36px" }} />
             </div>
             <div className="w-16 flex items-center justify-end gap-2">
               <Button
@@ -335,3 +335,4 @@ function DashboardLayoutContent({
     </>
   );
 }
+

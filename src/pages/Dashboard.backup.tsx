@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
@@ -201,7 +201,7 @@ export default function Dashboard() {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!sidebarCollapsed && (
-            <img src="/radflow-logo.png" alt="Rad.flow" className="h-8" style={{width: '50px'}} />
+            <img src="/IDream Entertainment-logo.png" alt="IDream Entertainment" className="h-8" style={{width: '50px'}} />
           )}
           <Button
             variant="ghost"
@@ -281,7 +281,7 @@ export default function Dashboard() {
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <img src="/radflow-logo.png" alt="Rad.flow" className="h-8" />
+          <img src="/IDream Entertainment-logo.png" alt="IDream Entertainment" className="h-8" />
           <Button
             variant="ghost"
             size="icon"
@@ -301,7 +301,7 @@ export default function Dashboard() {
                   Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, {user?.name}!
                 </h2>
                 <p className="text-muted-foreground mt-1">
-                  {format(currentTime, "EEEE, MMMM dd, yyyy")} • {format(currentTime, "HH:mm:ss")}
+                  {format(currentTime, "EEEE, MMMM dd, yyyy")} â€¢ {format(currentTime, "HH:mm:ss")}
                 </p>
               </div>
 
@@ -497,7 +497,7 @@ export default function Dashboard() {
                           {project.status.replace("_", " ")}
                         </span>
                         {project.role && (
-                          <span className="text-muted-foreground">• {project.role}</span>
+                          <span className="text-muted-foreground">â€¢ {project.role}</span>
                         )}
                       </div>
                     </div>
@@ -608,3 +608,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useMemo, useState, ReactNode } from "react";
+﻿import { useMemo, useState, ReactNode } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
@@ -101,7 +101,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
@@ -133,7 +133,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           {!showCollapsed && (
             <img
               src={logoSrc}
-              alt="Rad.flow"
+              alt="IDream Entertainment"
               className="h-8"
               style={{ width: "115px", height: "61px" }}
             />
@@ -245,7 +245,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           </Button>
           <img
             src={logoSrc}
-            alt="Rad.flow"
+            alt="IDream Entertainment"
             className="h-7"
             style={{ width: "90px", height: "36px" }}
           />
@@ -298,3 +298,4 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     </div>
   );
 }
+

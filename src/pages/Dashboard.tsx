@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+﻿import { useState, useEffect, useMemo, useRef } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -477,7 +477,7 @@ function EmployeeDashboard() {
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
+  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
@@ -507,7 +507,7 @@ function EmployeeDashboard() {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!showCollapsed && (
-            <img src={logoSrc} alt="Rad.flow" className="h-8" style={{width: '115px', height: '61px'}} />
+            <img src={logoSrc} alt="IDream Entertainment" className="h-8" style={{width: '115px', height: '61px'}} />
           )}
           {isMobile ? (
             <Button
@@ -602,7 +602,7 @@ function EmployeeDashboard() {
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <img src={logoSrc} alt="Rad.flow" className="h-8" />
+          <img src={logoSrc} alt="IDream Entertainment" className="h-8" />
           <div className="flex items-center gap-1">
             <Link href="/notifications">
               <Button
@@ -649,7 +649,7 @@ function EmployeeDashboard() {
                     Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, {user?.name}!
                   </h2>
                   <p className="text-muted-foreground mt-1">
-                    {format(currentTime, "EEEE, MMMM dd, yyyy")} • {format(currentTime, "HH:mm:ss")}
+                    {format(currentTime, "EEEE, MMMM dd, yyyy")} â€¢ {format(currentTime, "HH:mm:ss")}
                   </p>
                 </div>
               </div>
@@ -991,7 +991,7 @@ function EmployeeDashboard() {
                         )}
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <span className="capitalize">{project.status.replace("_", " ")}</span>
-                          {project.role && <span>• {project.role}</span>}
+                          {project.role && <span>â€¢ {project.role}</span>}
                         </div>
                       </div>
                     </div>
@@ -1468,3 +1468,4 @@ export default function Dashboard() {
 
   return <EmployeeDashboard />;
 }
+

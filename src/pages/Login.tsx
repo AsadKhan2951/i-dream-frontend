@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,8 +77,8 @@ export default function Login() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <img
-              src={theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png"}
-              alt="Rad.flow"
+              src={theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png"}
+              alt="IDream Entertainment"
               className="h-16"
             />
           </div>
@@ -200,3 +200,4 @@ export default function Login() {
     </div>
   );
 }
+
