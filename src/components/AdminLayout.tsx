@@ -58,7 +58,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
-  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
+  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   const { data: chatMessages } = trpc.chat.getMessages.useQuery(
@@ -167,7 +167,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           {!showCollapsed && (
             <img
               src={logoSrc}
-              alt="IDream Entertainment"
+              alt="Rad Flow"
               className="h-20 w-auto max-w-[180px] object-contain"
             />
           )}
@@ -268,7 +268,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
               <div className="flex-1 flex items-center justify-center">
                 <img
                   src={logoSrc}
-                  alt="IDream Entertainment"
+                  alt="Rad Flow"
                   className="h-7 w-auto max-w-[120px] object-contain"
                 />
               </div>

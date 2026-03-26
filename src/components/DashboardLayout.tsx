@@ -140,7 +140,7 @@ function DashboardLayoutContent({
   ];
 
   const activeMenuItem = menuItems.find(item => item.path === location);
-  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
+  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
 
   useEffect(() => {
     if (isCollapsed) {
@@ -208,7 +208,7 @@ function DashboardLayoutContent({
                 <div className="flex items-center gap-2 min-w-0">
                   <img
                     src={logoSrc}
-                    alt="IDream Entertainment"
+                    alt="Rad Flow"
                     className="h-20 w-auto max-w-[180px] object-contain"
                   />
                 </div>
@@ -289,7 +289,7 @@ function DashboardLayoutContent({
             <div className="flex-1 flex items-center justify-center">
               <img
                 src={logoSrc}
-                alt="IDream Entertainment"
+                alt="Rad Flow"
                 className="h-7 w-auto max-w-[120px] object-contain"
               />
             </div>

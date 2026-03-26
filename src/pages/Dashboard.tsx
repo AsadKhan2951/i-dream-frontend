@@ -477,7 +477,7 @@ function EmployeeDashboard() {
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
+  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
@@ -509,7 +509,7 @@ function EmployeeDashboard() {
           {!showCollapsed && (
             <img
               src={logoSrc}
-              alt="IDream Entertainment"
+              alt="Rad Flow"
               className="h-20 w-auto max-w-[180px] object-contain"
             />
           )}
@@ -608,7 +608,7 @@ function EmployeeDashboard() {
           </Button>
           <img
             src={logoSrc}
-            alt="IDream Entertainment"
+            alt="Rad Flow"
             className="h-8 w-auto max-w-[140px] object-contain"
           />
           <div className="flex items-center gap-1">

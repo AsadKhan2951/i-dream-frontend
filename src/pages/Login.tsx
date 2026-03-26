@@ -77,8 +77,8 @@ export default function Login() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <img
-              src={theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png"}
-              alt="IDream Entertainment"
+              src={theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png"}
+              alt="Rad Flow"
               className="h-20 w-auto max-w-full object-contain"
             />
           </div>

@@ -101,7 +101,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
+  const logoSrc = theme === "dark" ? "/radflow-logo-white.png" : "/radflow-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
@@ -133,7 +133,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           {!showCollapsed && (
             <img
               src={logoSrc}
-              alt="IDream Entertainment"
+              alt="Rad Flow"
               className="h-20 w-auto max-w-[180px] object-contain"
             />
           )}
@@ -244,7 +244,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           </Button>
           <img
             src={logoSrc}
-            alt="IDream Entertainment"
+            alt="Rad Flow"
             className="h-7 w-auto max-w-[120px] object-contain"
           />
           <div className="flex items-center gap-1">
