@@ -510,7 +510,7 @@ function EmployeeDashboard() {
             <img
               src={logoSrc}
               alt="IDream Entertainment"
-              className="h-8 w-auto max-w-[140px] object-contain"
+              className="h-20 w-auto max-w-[180px] object-contain"
             />
           )}
           {isMobile ? (
