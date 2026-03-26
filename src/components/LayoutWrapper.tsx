@@ -134,8 +134,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
             <img
               src={logoSrc}
               alt="IDream Entertainment"
-              className="h-8"
-              style={{ width: "115px", height: "61px" }}
+              className="h-8 w-auto max-w-[140px] object-contain"
             />
           )}
           {isMobile ? (
@@ -246,8 +245,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
           <img
             src={logoSrc}
             alt="IDream Entertainment"
-            className="h-7"
-            style={{ width: "90px", height: "36px" }}
+            className="h-7 w-auto max-w-[120px] object-contain"
           />
           <div className="flex items-center gap-1">
             <Link href="/notifications">

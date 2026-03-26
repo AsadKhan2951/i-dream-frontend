@@ -507,7 +507,11 @@ function EmployeeDashboard() {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!showCollapsed && (
-            <img src={logoSrc} alt="IDream Entertainment" className="h-8" style={{width: '115px', height: '61px'}} />
+            <img
+              src={logoSrc}
+              alt="IDream Entertainment"
+              className="h-8 w-auto max-w-[140px] object-contain"
+            />
           )}
           {isMobile ? (
             <Button
@@ -602,7 +606,11 @@ function EmployeeDashboard() {
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <img src={logoSrc} alt="IDream Entertainment" className="h-8" />
+          <img
+            src={logoSrc}
+            alt="IDream Entertainment"
+            className="h-8 w-auto max-w-[140px] object-contain"
+          />
           <div className="flex items-center gap-1">
             <Link href="/notifications">
               <Button

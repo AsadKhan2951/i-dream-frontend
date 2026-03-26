@@ -165,7 +165,11 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!showCollapsed && (
-            <img src={logoSrc} alt="IDream Entertainment" className="h-8" style={{ width: "115px", height: "61px" }} />
+            <img
+              src={logoSrc}
+              alt="IDream Entertainment"
+              className="h-8 w-auto max-w-[140px] object-contain"
+            />
           )}
           <Button
             variant="ghost"
@@ -262,7 +266,11 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                 </Button>
               </div>
               <div className="flex-1 flex items-center justify-center">
-                <img src={logoSrc} alt="IDream Entertainment" className="h-7" style={{ width: "90px", height: "36px" }} />
+                <img
+                  src={logoSrc}
+                  alt="IDream Entertainment"
+                  className="h-7 w-auto max-w-[120px] object-contain"
+                />
               </div>
               <div className="w-16 flex items-center justify-end gap-2">
                 <div className="relative">
