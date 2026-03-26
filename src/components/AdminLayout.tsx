@@ -25,6 +25,8 @@ import {
   Bell,
   Activity,
   Settings,
+  Sun,
+  Moon,
   Mail,
   FileText,
   Plus,
@@ -306,8 +308,14 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                     </Card>
                   )}
                 </div>
-                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
-                  <Settings className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={toggleTheme}
+                  title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
@@ -365,8 +373,14 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
                   )}
                 </div>
 
-                <Button variant="ghost" size="icon" className="h-9 w-9" onClick={toggleTheme}>
-                  <Settings className="h-4 w-4" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={toggleTheme}
+                  title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                  {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
