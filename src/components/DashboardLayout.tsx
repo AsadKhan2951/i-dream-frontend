@@ -140,7 +140,7 @@ function DashboardLayoutContent({
   ];
 
   const activeMenuItem = menuItems.find(item => item.path === location);
-  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
+  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
 
   useEffect(() => {
     if (isCollapsed) {
@@ -335,5 +335,6 @@ function DashboardLayoutContent({
     </>
   );
 }
+
 
 

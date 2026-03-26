@@ -101,7 +101,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const filteredMenuItems = menuItems.filter(item =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
+  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   return (
@@ -298,5 +298,6 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     </div>
   );
 }
+
 
 

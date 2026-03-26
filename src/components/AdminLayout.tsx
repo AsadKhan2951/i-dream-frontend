@@ -58,7 +58,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const currentUserId = user?.id ? String(user.id) : null;
   useRealtime();
-  const logoSrc = theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png";
+  const logoSrc = theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png";
   const showCollapsed = isMobile ? false : sidebarCollapsed;
 
   const { data: chatMessages } = trpc.chat.getMessages.useQuery(
@@ -434,5 +434,6 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     </div>
   );
 }
+
 
 

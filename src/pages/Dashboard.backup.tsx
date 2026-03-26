@@ -201,7 +201,7 @@ export default function Dashboard() {
         {/* Logo & Toggle */}
         <div className="p-4 border-b flex items-center justify-between">
           {!sidebarCollapsed && (
-            <img src="/IDream Entertainment-logo.png" alt="IDream Entertainment" className="h-8" style={{width: '50px'}} />
+            <img src="/i-dream-logo.png" alt="IDream Entertainment" className="h-8" style={{width: '50px'}} />
           )}
           <Button
             variant="ghost"
@@ -281,7 +281,7 @@ export default function Dashboard() {
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
-          <img src="/IDream Entertainment-logo.png" alt="IDream Entertainment" className="h-8" />
+          <img src="/i-dream-logo.png" alt="IDream Entertainment" className="h-8" />
           <Button
             variant="ghost"
             size="icon"

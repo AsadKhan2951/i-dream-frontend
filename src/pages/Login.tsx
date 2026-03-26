@@ -77,7 +77,7 @@ export default function Login() {
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
             <img
-              src={theme === "dark" ? "/IDream Entertainment-logo-white.png" : "/IDream Entertainment-logo.png"}
+              src={theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png"}
               alt="IDream Entertainment"
               className="h-16"
             />
@@ -200,5 +200,6 @@ export default function Login() {
     </div>
   );
 }
+
 
 
