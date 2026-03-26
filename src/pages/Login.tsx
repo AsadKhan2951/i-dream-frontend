@@ -79,7 +79,7 @@ export default function Login() {
             <img
               src={theme === "dark" ? "/i-dream-logo.png" : "/i-dream-logo.png"}
               alt="IDream Entertainment"
-              className="h-16"
+              className="h-20 w-auto max-w-full object-contain"
             />
           </div>
           <CardDescription className="text-center">
